@@ -30,6 +30,10 @@ function Story() {
             </svg>
           </em>
         </h2>
+        <p className="story-positioning">
+          Coimbatore's first food product customisation outlet, No plastic
+          sustainable, organic Health store
+        </p>
         <p>
           We believe the best food does not need a long introduction. It starts
           with a good ingredient, a trusted source, and the time to choose well.

@@ -162,6 +162,16 @@ em {
     400 18px/29px Inter,
     sans-serif;
 }
+.hero-positioning,
+.story-positioning {
+  max-width: 420px;
+  margin: var(--space-xl) 0 0;
+  color: var(--primary-deep);
+  font:
+    600 13px/18px Inter,
+    sans-serif;
+  letter-spacing: 0.2px;
+}
 .button {
   display: inline-flex;
   align-items: center;
@@ -465,6 +475,25 @@ em {
     500 40px/1 Fraunces,
     serif;
 }
+.testimonial-carousel {
+  min-height: 136px;
+  display: grid;
+  place-items: center;
+}
+.testimonial-slide {
+  width: 100%;
+  animation: testimonial-enter 0.45s ease both;
+}
+@keyframes testimonial-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 blockquote {
   margin: var(--space-xl) auto;
   font:
@@ -505,6 +534,54 @@ blockquote {
 .stars {
   color: var(--gold);
   letter-spacing: 2px;
+}
+.testimonial-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-top: var(--space-3xl);
+}
+.testimonial-controls > button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.testimonial-controls > button:hover,
+.testimonial-controls > button:focus-visible {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.testimonial-dots {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.testimonial-dots button {
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--hairline);
+  cursor: pointer;
+  transition:
+    width 0.2s ease,
+    background 0.2s ease;
+}
+.testimonial-dots button.is-active {
+  width: 20px;
+  background: var(--primary);
 }
 .visit {
   display: grid;
