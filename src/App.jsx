@@ -63,7 +63,15 @@ const categories = [
 function App() {
   const [activeCategory, setActiveCategory] = useState("All favourites");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const root = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 8);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia(
@@ -242,7 +250,9 @@ function App() {
 
   return (
     <div ref={root}>
-      <header className="site-header">
+      <header
+        className={isScrolled ? "site-header is-scrolled" : "site-header"}
+      >
         <a className="brand" href="#top" aria-label="Herbs and Brews home">
           <span className="brand-mark">
             H<span>&</span>B
@@ -288,10 +298,9 @@ function App() {
               A little good for every day <span>✳</span>
             </p>
             <h1 className="split-heading">
-              Good things,
-              <br />
+              Good things, well{" "}
               <em>
-                well chosen.
+                chosen.
                 <svg
                   className="headline-underline"
                   viewBox="0 0 260 12"
@@ -498,9 +507,7 @@ function App() {
           <div className="visit-copy">
             <p className="eyebrow">Come say hello</p>
             <h2>
-              Your neighbourhood
-              <br />
-              <em>goodness stop.</em>
+              Your neighbourhood goodness <em>stop.</em>
             </h2>
             <div className="visit-details">
               <div>
@@ -548,7 +555,7 @@ function App() {
             <h2>
               Drop in, call up,
               <br />
-              <em>or WhatsApp us.</em>
+              or <em>WhatsApp</em> us.
             </h2>
           </div>
           <div className="contact-actions">
