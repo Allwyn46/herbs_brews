@@ -11,9 +11,10 @@ import {
 } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { SplitText } from "gsap/SplitText";
 import Lenis from "lenis";
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, SplitText);
 
 const products = [
   {
@@ -75,39 +76,157 @@ function App() {
     gsap.ticker.add(raf);
     gsap.ticker.lagSmoothing(0);
     const ctx = gsap.context(() => {
-      gsap.from(".hero-copy > *", {
-        y: 28,
-        opacity: 0,
-        duration: 0.7,
-        stagger: 0.1,
-        ease: "power2.out",
-      });
-      gsap.utils.toArray("[data-reveal]").forEach((element) => {
+      const splitHeadings = gsap.utils
+        .toArray(".split-heading")
+        .map((heading) => {
+          const split = new SplitText(heading, {
+            type: "chars",
+            charsClass: "split-char",
+          });
+          const chars = split.chars;
+          gsap.set(chars, {
+            clipPath: "inset(0 0 100% 0)",
+            yPercent: 110,
+            rotate: 4,
+            transformOrigin: "0 100%",
+          });
+          const timeline = gsap.timeline({
+            scrollTrigger: heading.closest(".hero")
+              ? undefined
+              : {
+                  trigger: heading,
+                  start: "top 82%",
+                  toggleActions: "play none none reverse",
+                },
+          });
+          timeline.to(chars, {
+            clipPath: "inset(0 0 0% 0)",
+            yPercent: 0,
+            rotate: 0,
+            duration: 0.7,
+            stagger: 0.02,
+            ease: "cubic-bezier(0.16, 1, 0.3, 1)",
+          });
+          if (heading.closest(".hero")) timeline.play(0);
+          const underline = heading.querySelector(".underline-path");
+          if (underline) {
+            const length = underline.getTotalLength();
+            gsap.set(underline, {
+              strokeDasharray: length,
+              strokeDashoffset: length,
+            });
+            timeline.to(
+              underline,
+              { strokeDashoffset: 0, duration: 0.45, ease: "power2.out" },
+              "-=0.25",
+            );
+          }
+          return split;
+        });
+
+      gsap.utils.toArray("[data-image-reveal]").forEach((element) => {
+        const image = element.querySelector("img");
         gsap.from(element, {
-          y: 38,
-          opacity: 0,
-          duration: 0.55,
-          ease: "power2.out",
+          clipPath: "polygon(0 0, 100% 0, 82% 100%, 0 100%)",
+          duration: 0.8,
+          ease: "power4.out",
           scrollTrigger: {
             trigger: element,
-            start: "top 84%",
-            toggleActions: "play none none reverse",
-          },
-        });
-      });
-      gsap.utils.toArray(".product-image").forEach((image) => {
-        gsap.from(image, {
-          clipPath: "inset(0 0 100% 0)",
-          scale: 1.08,
-          duration: 0.7,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: image,
             start: "top 82%",
             toggleActions: "play none none reverse",
           },
         });
+        gsap.fromTo(
+          image,
+          { yPercent: 7 },
+          {
+            yPercent: -7,
+            ease: "none",
+            scrollTrigger: {
+              trigger: element,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: true,
+            },
+          },
+        );
+        if (element.classList.contains("story-image")) {
+          gsap.fromTo(
+            image,
+            { filter: "grayscale(1) sepia(.28) saturate(.55)" },
+            {
+              filter: "grayscale(0) sepia(0) saturate(1)",
+              ease: "none",
+              scrollTrigger: {
+                trigger: element,
+                start: "top 88%",
+                end: "center 50%",
+                scrub: true,
+              },
+            },
+          );
+        }
       });
+
+      const ticker = gsap.to(".ticker-track", {
+        xPercent: -50,
+        duration: 18,
+        repeat: -1,
+        yoyo: true,
+        ease: "none",
+      });
+      const tickerElement = root.current.querySelector(".marquee");
+      tickerElement?.addEventListener("mouseenter", () =>
+        ticker.timeScale(0.2),
+      );
+      tickerElement?.addEventListener("mouseleave", () => ticker.timeScale(1));
+
+      gsap.utils.toArray(".magnetic").forEach((button) => {
+        const moveX = gsap.quickTo(button, "x", {
+          duration: 0.35,
+          ease: "power3.out",
+        });
+        const moveY = gsap.quickTo(button, "y", {
+          duration: 0.35,
+          ease: "power3.out",
+        });
+        button.addEventListener("mousemove", (event) => {
+          const rect = button.getBoundingClientRect();
+          moveX((event.clientX - (rect.left + rect.width / 2)) * 0.18);
+          moveY((event.clientY - (rect.top + rect.height / 2)) * 0.18);
+        });
+        button.addEventListener("mouseleave", () => {
+          moveX(0);
+          moveY(0);
+        });
+      });
+
+      const cursor = root.current.querySelector(".cursor-pill");
+      const cursorX = gsap.quickTo(cursor, "x", {
+        duration: 0.2,
+        ease: "power3.out",
+      });
+      const cursorY = gsap.quickTo(cursor, "y", {
+        duration: 0.2,
+        ease: "power3.out",
+      });
+      root.current.addEventListener("mousemove", (event) => {
+        cursorX(event.clientX);
+        cursorY(event.clientY);
+      });
+      root.current.querySelectorAll(".product-card").forEach((card) => {
+        card.addEventListener("mouseenter", () =>
+          cursor.classList.add("is-visible"),
+        );
+        card.addEventListener("mouseleave", () =>
+          cursor.classList.remove("is-visible"),
+        );
+      });
+
+      return () => {
+        splitHeadings.forEach((split) => split.revert());
+        ticker.kill();
+      };
     }, root);
     return () => {
       ctx.revert();
@@ -168,16 +287,28 @@ function App() {
             <p className="eyebrow">
               A little good for every day <span>✳</span>
             </p>
-            <h1>
+            <h1 className="split-heading">
               Good things,
               <br />
-              <em>well chosen.</em>
+              <em>
+                well chosen.
+                <svg
+                  className="headline-underline"
+                  viewBox="0 0 260 12"
+                  aria-hidden="true"
+                >
+                  <path
+                    className="underline-path"
+                    d="M2 8 C54 2, 165 2, 258 7"
+                  />
+                </svg>
+              </em>
             </h1>
             <p className="hero-intro">
               Premium dry fruits, vibrant spices and soul-warming brews,
               thoughtfully sourced for your everyday rituals.
             </p>
-            <a className="button button-dark" href="#shop">
+            <a className="button button-dark magnetic" href="#shop">
               Explore the pantry <ArrowUpRight size={17} />
             </a>
             <div className="hero-trust">
@@ -188,7 +319,7 @@ function App() {
               <span className="trust-dot" /> <span>Women-owned</span>
             </div>
           </div>
-          <div className="hero-art">
+          <div className="hero-art" data-image-reveal>
             <img
               src="https://images.unsplash.com/photo-1508061253366-f7da158b6d46?auto=format&fit=crop&w=1200&q=88"
               alt="A warm bowl of almonds and dried fruit"
@@ -211,18 +342,52 @@ function App() {
           </div>
         </section>
         <section className="marquee">
-          <div>
-            DRY FRUITS <span>✳</span> NUTS <span>✳</span> MASALA TEA{" "}
-            <span>✳</span> SPICES <span>✳</span> DATES <span>✳</span> KAJU KANI{" "}
-            <span>✳</span>
+          <div className="ticker-track">
+            <span>DRY FRUITS</span>
+            <i>✳</i>
+            <span>NUTS</span>
+            <i>✳</i>
+            <span>MASALA TEA</span>
+            <i>✳</i>
+            <span>SPICES</span>
+            <i>✳</i>
+            <span>DATES</span>
+            <i>✳</i>
+            <span>KAJU KANI</span>
+            <i>✳</i>
+            <span>DRY FRUITS</span>
+            <i>✳</i>
+            <span>NUTS</span>
+            <i>✳</i>
+            <span>MASALA TEA</span>
+            <i>✳</i>
+            <span>SPICES</span>
+            <i>✳</i>
+            <span>DATES</span>
+            <i>✳</i>
+            <span>KAJU KANI</span>
+            <i>✳</i>
           </div>
         </section>
         <section className="shop section-pad" id="shop">
-          <div className="section-heading" data-reveal>
+          <div className="section-heading">
             <div>
               <p className="eyebrow">From our pantry</p>
-              <h2>
-                Favourites, <em>freshly packed.</em>
+              <h2 className="split-heading">
+                Favourites,{" "}
+                <em>
+                  freshly packed.
+                  <svg
+                    className="headline-underline"
+                    viewBox="0 0 260 12"
+                    aria-hidden="true"
+                  >
+                    <path
+                      className="underline-path"
+                      d="M2 8 C54 2, 165 2, 258 7"
+                    />
+                  </svg>
+                </em>
               </h2>
             </div>
             <a className="text-link" href="#contact">
@@ -244,8 +409,8 @@ function App() {
           </div>
           <div className="product-grid">
             {visibleProducts.map((product) => (
-              <article className="product-card" key={product.name} data-reveal>
-                <div className="product-image">
+              <article className="product-card" key={product.name}>
+                <div className="product-image" data-image-reveal>
                   <img loading="lazy" src={product.image} alt={product.name} />
                   <span>{product.category}</span>
                 </div>
@@ -269,7 +434,7 @@ function App() {
           </div>
         </section>
         <section className="story section-pad" id="story">
-          <div className="story-image" data-reveal>
+          <div className="story-image" data-image-reveal>
             <img
               loading="lazy"
               src="https://images.unsplash.com/photo-1532336414038-cf19250c5757?auto=format&fit=crop&w=1000&q=85"
@@ -281,10 +446,23 @@ function App() {
               to yours
             </span>
           </div>
-          <div className="story-copy" data-reveal>
+          <div className="story-copy">
             <p className="eyebrow">Why Herbs & Brews</p>
-            <h2>
-              A pantry with <em>purpose.</em>
+            <h2 className="split-heading">
+              A pantry with{" "}
+              <em>
+                purpose.
+                <svg
+                  className="headline-underline"
+                  viewBox="0 0 150 12"
+                  aria-hidden="true"
+                >
+                  <path
+                    className="underline-path"
+                    d="M2 8 C38 2, 100 2, 148 7"
+                  />
+                </svg>
+              </em>
             </h2>
             <p>
               We believe the best food does not need a long introduction. It
@@ -301,7 +479,7 @@ function App() {
             </a>
           </div>
         </section>
-        <section className="testimonial section-pad" data-reveal>
+        <section className="testimonial section-pad">
           <div className="quote-mark">“</div>
           <blockquote>
             “The dry fruits are so fresh, and their masala tea is now a morning
@@ -345,7 +523,7 @@ function App() {
               </div>
             </div>
             <a
-              className="button button-outline"
+              className="button button-outline magnetic"
               href="https://maps.google.com/?q=Herbs+%26+Brews+Coimbatore"
               target="_blank"
               rel="noreferrer"
@@ -376,7 +554,7 @@ function App() {
           <div className="contact-actions">
             <p>Delivery, pickup and in-store shopping, all welcome.</p>
             <a
-              className="button button-light"
+              className="button button-light magnetic"
               href="https://wa.me/919566577123"
               target="_blank"
               rel="noreferrer"
@@ -410,7 +588,7 @@ function App() {
         </div>
       </footer>
       <a
-        className="floating-order"
+        className="floating-order magnetic"
         href="https://wa.me/919566577123"
         target="_blank"
         rel="noreferrer"
@@ -418,6 +596,9 @@ function App() {
         <MessageCircle size={20} />
         <span>Order on WhatsApp</span>
       </a>
+      <div className="cursor-pill" aria-hidden="true">
+        View
+      </div>
     </div>
   );
 }
