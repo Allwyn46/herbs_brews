@@ -8,7 +8,7 @@ function Hero() {
           A little good for every day <span>✳</span>
         </p>
         <h1 className="split-heading">
-          Good things, well{" "}
+          Good things, <br /> well{" "}
           <em>
             chosen.
             <svg

@@ -88,6 +88,7 @@ function App() {
         });
       gsap.utils.toArray("[data-image-reveal]").forEach((element) => {
         const image = element.querySelector("img");
+        const isProductImage = element.classList.contains("product-image");
         gsap.from(element, {
           clipPath: "polygon(0 0, 100% 0, 82% 100%, 0 100%)",
           duration: 0.8,
@@ -95,7 +96,9 @@ function App() {
           scrollTrigger: {
             trigger: element,
             start: "top 82%",
-            toggleActions: "play none none reverse",
+            toggleActions: isProductImage
+              ? "play none none none"
+              : "play none none reverse",
           },
         });
         gsap.fromTo(
