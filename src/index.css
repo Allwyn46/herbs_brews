@@ -71,3 +71,136 @@ a {
 button {
   font: inherit;
 }
+
+/* ---------- FULLSCREEN HERO ---------- */
+
+:root {
+  --nav-height: 76px; /* match your actual nav bar height */
+}
+
+.hero-fullbleed {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - var(--nav-height));
+  min-height: 560px; /* floor so it never collapses on short laptop screens */
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+.hero-bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+}
+
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(28, 22, 15, 0.6) 0%,
+    rgba(28, 22, 15, 0.32) 45%,
+    rgba(28, 22, 15, 0.08) 75%
+  );
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 560px;
+  padding: 0 clamp(24px, 6vw, 64px);
+  color: #fdf8f0;
+}
+
+.hero-content .eyebrow,
+.hero-content .hero-intro,
+.hero-content .hero-trust {
+  color: rgba(253, 248, 240, 0.85);
+}
+
+/* button-light: for a dark video background, invert the CTA so it doesn't
+   disappear against the scrim like button-dark would */
+.button-light {
+  background: #fdf8f0;
+  color: #1c160f;
+}
+.button-light:hover {
+  background: #fff;
+}
+
+/* ---------- FIXED BADGE (was the broken diagonal stripe) ---------- */
+
+.hero-badge {
+  position: absolute;
+  top: 100px; /* clears the fixed nav */
+  right: clamp(24px, 6vw, 64px);
+  z-index: 3;
+  width: 128px;
+  height: 128px;
+  border-radius: 50%;
+  background: rgba(253, 248, 240, 0.95);
+  color: #1c160f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 13px;
+  line-height: 1.3;
+  transform: rotate(-8deg);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.hero-badge em {
+  color: #c1622f; /* your terracotta accent */
+  font-style: italic;
+}
+
+.badge-star {
+  position: absolute;
+  bottom: -6px;
+  right: -6px;
+  background: #c1622f;
+  color: #fdf8f0;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.hero-caption {
+  position: absolute;
+  bottom: 28px;
+  right: clamp(24px, 6vw, 64px);
+  z-index: 2;
+  color: rgba(253, 248, 240, 0.92);
+  text-align: right;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .hero-fullbleed {
+    height: calc(100vh - var(--nav-height));
+    min-height: 520px;
+  }
+  .hero-badge {
+    width: 96px;
+    height: 96px;
+    font-size: 11px;
+    top: 84px;
+  }
+  .hero-content {
+    max-width: 100%;
+  }
+}

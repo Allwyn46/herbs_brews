@@ -86,6 +86,16 @@ function App() {
           }
           return split;
         });
+      const heroVideoFrame = root.current.querySelector(".hero-video-frame");
+      if (heroVideoFrame) {
+        gsap.from(heroVideoFrame, {
+          autoAlpha: 0,
+          scale: 0.96,
+          duration: 1,
+          delay: 0.2,
+          ease: "power3.out",
+        });
+      }
       gsap.utils.toArray("[data-image-reveal]").forEach((element) => {
         const image = element.querySelector("img");
         const isProductImage = element.classList.contains("product-image");
