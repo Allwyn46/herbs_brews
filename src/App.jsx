@@ -20,6 +20,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const root = useRef(null);
+  const lenisRef = useRef(null);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 8);
@@ -34,6 +35,7 @@ function App() {
     ).matches;
     if (reduceMotion) return undefined;
     const lenis = new Lenis({ duration: 1.1, smoothWheel: true });
+    lenisRef.current = lenis;
     const raf = (time) => lenis.raf(time * 1000);
     lenis.on("scroll", ScrollTrigger.update);
     gsap.ticker.add(raf);
@@ -203,9 +205,21 @@ function App() {
     return () => {
       ctx.revert();
       lenis.destroy();
+      lenisRef.current = null;
       gsap.ticker.remove(raf);
     };
   }, []);
+
+  // Lock page scroll while the mobile menu overlay is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+      lenisRef.current?.stop();
+    } else {
+      document.body.style.overflow = "";
+      lenisRef.current?.start();
+    }
+  }, [menuOpen]);
 
   return (
     <div ref={root}>

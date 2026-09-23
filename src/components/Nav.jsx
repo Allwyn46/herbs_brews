@@ -3,24 +3,24 @@ import Brand from "./Brand";
 
 function Nav({ isScrolled, menuOpen, setMenuOpen }) {
   const closeMenu = () => setMenuOpen(false);
+  const textColor =
+    isScrolled || menuOpen ? "text-[#1c160f]" : "text-[#fdf8f0]";
 
   return (
     <header
-      className={`fixed top-0 left-0 z-50 flex w-full items-center justify-between px-6 py-4 transition-all duration-300 md:px-12 ${
+      className={`fixed top-0 left-0 z-50 flex w-full items-center justify-between px-6 py-4 transition-colors duration-300 md:px-12 ${
         isScrolled
           ? "bg-[#fdf8f0]/95 shadow-sm backdrop-blur-sm"
           : "bg-transparent"
       }`}
     >
-      <div className={isScrolled ? "text-[#1c160f]" : "text-[#fdf8f0]"}>
+      <div className={`transition-colors duration-300 ${textColor}`}>
         <Brand />
       </div>
 
       {/* Desktop nav links */}
       <nav
-        className={`hidden items-center gap-8 text-sm font-medium md:flex ${
-          isScrolled ? "text-[#1c160f]" : "text-[#fdf8f0]"
-        }`}
+        className={`hidden items-center gap-8 text-sm font-medium transition-colors duration-300 md:flex ${textColor}`}
       >
         <a
           href="#shop"
@@ -54,7 +54,7 @@ function Nav({ isScrolled, menuOpen, setMenuOpen }) {
 
       {/* WhatsApp CTA — desktop only, always solid regardless of scroll state */}
       <a
-        className="hidden items-center gap-2 rounded-full bg-[#c1622f] px-5 py-2.5 text-sm font-semibold text-[#fdf8f0] transition-colors hover:bg-[#a8512518] md:flex"
+        className="hidden items-center gap-2 rounded-full bg-[#c1622f] px-5 py-2.5 text-sm font-semibold text-[#fdf8f0] transition-colors hover:bg-[#a85125] md:flex"
         href="https://wa.me/919566577123"
         target="_blank"
         rel="noreferrer"
@@ -64,14 +64,9 @@ function Nav({ isScrolled, menuOpen, setMenuOpen }) {
 
       {/* Mobile menu toggle */}
       <button
-        className={`z-50 flex items-center justify-center md:hidden ${
-          menuOpen
-            ? "text-[#1c160f]"
-            : isScrolled
-              ? "text-[#1c160f]"
-              : "text-[#fdf8f0]"
-        }`}
+        className={`z-50 flex items-center justify-center transition-colors duration-300 md:hidden ${textColor}`}
         aria-label="Toggle navigation"
+        aria-expanded={menuOpen}
         onClick={() => setMenuOpen(!menuOpen)}
       >
         {menuOpen ? <X size={24} /> : <Menu size={24} />}
