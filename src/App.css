@@ -729,7 +729,7 @@ footer .brand {
   position: fixed;
   right: var(--space-xl);
   bottom: var(--space-xl);
-  z-index: 9;
+  z-index: 99;
   padding: var(--space-md) var(--space-xl);
   border-radius: var(--radius-sm);
   background: var(--primary);

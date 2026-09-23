@@ -42,7 +42,7 @@ function App() {
     gsap.ticker.lagSmoothing(0);
     const ctx = gsap.context(() => {
       const splitHeadings = gsap.utils
-        .toArray(".split-heading")
+        .toArray("[data-split-heading]")
         .map((heading) => {
           const split = new SplitText(heading, {
             type: "chars",
@@ -56,7 +56,7 @@ function App() {
             transformOrigin: "0 100%",
           });
           const timeline = gsap.timeline({
-            scrollTrigger: heading.closest(".hero")
+            scrollTrigger: heading.closest("[data-hero]")
               ? undefined
               : {
                   trigger: heading,
@@ -72,8 +72,8 @@ function App() {
             stagger: 0.02,
             ease: "cubic-bezier(0.16, 1, 0.3, 1)",
           });
-          if (heading.closest(".hero")) timeline.play(0);
-          const underline = heading.querySelector(".underline-path");
+          if (heading.closest("[data-hero]")) timeline.play(0);
+          const underline = heading.querySelector("[data-underline-path]");
           if (underline) {
             const length = underline.getTotalLength();
             gsap.set(underline, {
@@ -88,7 +88,9 @@ function App() {
           }
           return split;
         });
-      const heroVideoFrame = root.current.querySelector(".hero-video-frame");
+      const heroVideoFrame = root.current.querySelector(
+        "[data-hero-video-frame]",
+      );
       if (heroVideoFrame) {
         gsap.from(heroVideoFrame, {
           autoAlpha: 0,
@@ -157,7 +159,7 @@ function App() {
         ticker.timeScale(0.2),
       );
       tickerElement?.addEventListener("mouseleave", () => ticker.timeScale(1));
-      gsap.utils.toArray(".magnetic").forEach((button) => {
+      gsap.utils.toArray("[data-magnetic]").forEach((button) => {
         const moveX = gsap.quickTo(button, "x", {
           duration: 0.35,
           ease: "power3.out",
