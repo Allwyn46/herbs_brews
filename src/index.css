@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,380;0,9..144,420;0,9..144,450;0,9..144,500;1,9..144,450&family=Inter:wght@400;500;600&display=swap");
+@import "tailwindcss";
 
 :root {
   --primary: #a8462a;
@@ -72,19 +73,16 @@ button {
   font: inherit;
 }
 
-/* ---------- FULLSCREEN HERO ---------- */
-
-:root {
-  --nav-height: 76px; /* match your actual nav bar height */
-}
+/* ---------- FULLSCREEN HERO (nav overlaid, not stacked) ---------- */
 
 .hero-fullbleed {
   position: relative;
   width: 100%;
-  height: calc(100vh - var(--nav-height));
-  min-height: 560px; /* floor so it never collapses on short laptop screens */
+  height: 100vh; /* nav no longer subtracted — it now floats over this */
+  min-height: 560px;
   display: flex;
   align-items: center;
+  justify-content: center; /* centers hero-content horizontally */
   overflow: hidden;
   padding: 0;
   margin: 0;
@@ -104,30 +102,42 @@ button {
   position: absolute;
   inset: 0;
   background: linear-gradient(
-    120deg,
-    rgba(28, 22, 15, 0.6) 0%,
-    rgba(28, 22, 15, 0.32) 45%,
-    rgba(28, 22, 15, 0.08) 75%
+    180deg,
+    rgba(28, 22, 15, 0.55) 0%,
+    rgba(28, 22, 15, 0.35) 40%,
+    rgba(28, 22, 15, 0.5) 100%
   );
   z-index: 1;
 }
 
-.hero-content {
+/* ---------- CENTERED TEXT BLOCK ---------- */
+
+.hero-content-center {
   position: relative;
   z-index: 2;
-  max-width: 560px;
-  padding: 0 clamp(24px, 6vw, 64px);
+  max-width: 640px;
+  padding: 0 24px;
   color: #fdf8f0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.hero-content .eyebrow,
-.hero-content .hero-intro,
-.hero-content .hero-trust {
+.hero-content-center .eyebrow,
+.hero-content-center .hero-intro,
+.hero-content-center .hero-trust {
   color: rgba(253, 248, 240, 0.85);
 }
 
-/* button-light: for a dark video background, invert the CTA so it doesn't
-   disappear against the scrim like button-dark would */
+.hero-content-center .split-heading {
+  text-align: center;
+}
+
+.hero-content-center .hero-trust {
+  justify-content: center;
+}
+
 .button-light {
   background: #fdf8f0;
   color: #1c160f;
@@ -136,11 +146,11 @@ button {
   background: #fff;
 }
 
-/* ---------- FIXED BADGE (was the broken diagonal stripe) ---------- */
+/* ---------- BADGE ---------- */
 
 .hero-badge {
   position: absolute;
-  top: 100px; /* clears the fixed nav */
+  top: 120px;
   right: clamp(24px, 6vw, 64px);
   z-index: 3;
   width: 128px;
@@ -159,7 +169,7 @@ button {
 }
 
 .hero-badge em {
-  color: #c1622f; /* your terracotta accent */
+  color: #c1622f;
   font-style: italic;
 }
 
@@ -190,17 +200,10 @@ button {
 }
 
 @media (max-width: 768px) {
-  .hero-fullbleed {
-    height: calc(100vh - var(--nav-height));
-    min-height: 520px;
-  }
   .hero-badge {
     width: 96px;
     height: 96px;
     font-size: 11px;
-    top: 84px;
-  }
-  .hero-content {
-    max-width: 100%;
+    top: 96px;
   }
 }

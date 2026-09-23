@@ -32,7 +32,7 @@ function Hero() {
         <span className="badge-star">✳</span>
       </div>
 
-      <div className="hero-content">
+      <div className="hero-content hero-content-center">
         <p className="eyebrow">
           A little good for every day <span>✳</span>
         </p>
